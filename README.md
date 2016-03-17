@@ -14,3 +14,15 @@ npm install http-server -g
 http-server
 ```
 
+If you want to generate the source then a gulp task is included in the src folder. 
+
+You will need to install gulp and depencies in the same folde as per the folllowing command.
+
+```JavaScript
+npm install --save gulp gulp-concat gulp-jshint gulp-rename gulp-sass gulp-uglify gulp-util
+```
+
+Then just type gulp from command line
+```cmd
+gulp
+```
