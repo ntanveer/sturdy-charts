@@ -1,10 +1,32 @@
 var SC = SC || {};
-
+if (!SC.chart) { SC.chart = {}; }
 /*global d3 */
 
-var SC = SC || {};
-if (!SC.chart) { SC.chart = {}; }
+!(function(SC) {
+    if (!SC.layouts) SC.layouts = {};
+    SC.layouts.pie = d3.layout.pie()
+		.sort(null)
+		.startAngle(0)
+		.endAngle(2 * Math.PI)
+		.value(function (d) { return d.values; });
+})(SC);
 
+
+!(function(SC) {
+    if (!SC.common) SC.common = {};
+    SC.common.keyFunction = function (dataValues) {
+		var index = d3.range(dataValues.length);
+		var keyData = [];
+		index.forEach(function (i) {
+			keyData[i] = { data: dataValues[i] };
+		});
+		return keyData;
+	};
+})(SC);
+
+
+
+!(function(SC) {
 SC.chart.pie = function () {
 	"use strict";
 	var data,
@@ -21,21 +43,6 @@ SC.chart.pie = function () {
 		container,
 		pieChart,
 		keyIndicator;
-
-	var pie = d3.layout.pie()
-		.sort(null)
-		.startAngle(0 * Math.PI)
-		.endAngle(2 * Math.PI)
-		.value(function (d) { return d.values; });
-
-	var key = function (dataValues) {
-		var index = d3.range(dataValues.length);
-		var keyData = [];
-		index.forEach(function (i) {
-			keyData[i] = { data: dataValues[i] };
-		});
-		return keyData;
-	};
 
 	function chart(elementSelector) {
 		chart.reDrawChart(elementSelector);
@@ -115,7 +122,7 @@ SC.chart.pie = function () {
 		}
 
 		keyIndicator.append("div").attr('class', 'sc-pie-chart-keyHeader').text(data.title);
-		var keyValues = key(data.values);
+		var keyValues = SC.common.keyFunction(data.values);
 
 		keyIndicatorContainer = keyIndicator.append("div");
 		var list = keyIndicatorContainer.append('ul');
@@ -126,18 +133,13 @@ SC.chart.pie = function () {
 				return (d.data.url !== "other") ? "default" : "pointer";
 			});
 
-		// Sets animation type (default is 'exp-in-out')
 		var animationType = $(pieContainerSelector).data('animation-type') || 'exp-in-out';
 
-		// Sets animation speed in milliseconds (default is 1200)
 		var animationSpeed = $(pieContainerSelector).data('animation-speed') || 1200;
 
 
-		//Animation type for key
-		// Sets optional animation for key
 		var KeyAnimationType = $(pieContainerSelector).data('key-animation-type') || animationType;
 
-		// Sets optional animation speed for key in milliseconds (default is 1200)
 		var KeyAnimationSpeed = $(pieContainerSelector).data('key-animation-speed') || animationSpeed;
 
 		li.append('div')
@@ -163,14 +165,10 @@ SC.chart.pie = function () {
 	function drawArcs() {
 		var arc = d3.svg.arc();
 
-		// Gets specified chart type
-		//var chartType = this.options.chartType || 'pie';	//$(pieContainerSelector).data('chart-type')
 		var chartType = $(pieContainerSelector).data('chart-type') || 'pie';
 
-		// Sets animation type (default is 'exp-in-out')
 		var animationType = $(pieContainerSelector).data('animation-type') || 'exp-in-out';
 
-		// Sets animation speed in milliseconds (default is 1200)
 		var animationSpeed = $(pieContainerSelector).data('animation-speed') || 1200;
 
 		if (options.HideLegend === true) {
@@ -186,7 +184,7 @@ SC.chart.pie = function () {
             }
 		}
 
-		var pieValues = pie(data.values);
+		var pieValues = SC.layouts.pie(data.values);
 
         var g = svgGroup.selectAll(".arc")
             .data(pieValues)
@@ -200,7 +198,6 @@ SC.chart.pie = function () {
                         arc.endAngle = 0;
                 });
 
-        // Animation parameters
         g.append("path")
             .attr("d", arc)
                 .style("fill", function (d, i) { return pieChartColours(i); })
@@ -213,7 +210,7 @@ SC.chart.pie = function () {
                 });
 
 		function drawEmptyPieChart() {
-			var grads = svgGroup.append("defs").selectAll("radialGradient").data(pie(pieValues))
+			var grads = svgGroup.append("defs").selectAll("radialGradient").data(SC.layouts.pie(pieValues))
 			.enter().append("radialGradient")
 			.attr("gradientUnits", "userSpaceOnUse")
 			.attr("cx", 0)
@@ -222,7 +219,7 @@ SC.chart.pie = function () {
 			.attr("id", function (d, i) { return "grad" + i; });
 
 			svgGroup.selectAll("path")
-				.data(pie(pieValues))
+				.data(SC.layouts.pie(pieValues))
 				.enter().append("path")
 				.attr("fill", function (d, i) { return "url(#grad" + i + ")"; })
 				.attr("d", arc);
@@ -317,3 +314,4 @@ SC.chart.pie = function () {
 
 	return chart;
 	};
+})(SC);
