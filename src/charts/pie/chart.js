@@ -6,11 +6,9 @@ if (!SC.chart) { SC.chart = {}; }
 SC.chart.pie = function () {
 	"use strict";
 	var data,
-		color,
-		outerHeight = 256, //16 em
+		outerHeight = 256,
 		outerWidth = 600,
 		pieChartWidth,
-		donutWidth = 35, //Sets donut chart width
 		keyChartWidth,
 		svgGroup,
 		keyIndicatorContainer,
