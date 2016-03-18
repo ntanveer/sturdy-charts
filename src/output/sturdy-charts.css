@@ -18,8 +18,7 @@
     vertical-align: top;
     padding-left: 0.625em; }
     .sc-pie-chart-container .sc-pie-chart-key div {
-      position: relative;
-      /*overflow-y: hidden;*/ }
+      position: relative; }
     .sc-pie-chart-container .sc-pie-chart-key .sc-pie-chart-keyHeader {
       font-weight: 600;
       line-height: 1em;

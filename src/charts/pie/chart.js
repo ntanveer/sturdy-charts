@@ -22,13 +22,6 @@ SC.chart.pie = function () {
 		pieChart,
 		keyIndicator;
 
-	var noDataColor = ["#ebeff2", "#f5f5f5"];
-	var noDataValue = {
-		values: [{
-			value: 100
-		}]
-	};
-
 	var pie = d3.layout.pie()
 		.sort(null)
 		.startAngle(0 * Math.PI)
@@ -116,7 +109,6 @@ SC.chart.pie = function () {
 		drawArcs();
 	};
 
-	// Draw chart legend
 	chart.drawKey = function (keyIndicator) {
 		if (options.HideLegend === true) {
 			return;
@@ -157,7 +149,9 @@ SC.chart.pie = function () {
 			.style('background-color', function (d, i) { return keyColours[i]; });
 
 		var keyText = li.append('div')
-			.text(function (d) { return d.data.label; })
+			.text(function (d) {
+                return d.data.key;
+            })
 			.style('opacity', '0');
 
 		keyText.transition()
@@ -180,90 +174,43 @@ SC.chart.pie = function () {
 		var animationSpeed = $(pieContainerSelector).data('animation-speed') || 1200;
 
 		if (options.HideLegend === true) {
-			if (chartType == 'donut') {
-				arc.outerRadius(outerHeight / 2.5)
-					.innerRadius((outerHeight / 2.5) - donutWidth);
-			} else if (chartType == 'pie') {
 				arc.outerRadius(outerHeight / 2.5)
 					.innerRadius(0);
-			} else {
-				arc.outerRadius(outerHeight / 2.5)
-					.innerRadius(0);
-			}
-
 		} else {
-			// Donut chart-type
-			if (chartType == 'donut') {
-				if ((outerWidth / 2) > outerHeight) {
-					arc.outerRadius(outerHeight / 2.5)
-						.innerRadius((outerHeight / 2.5) - donutWidth);
-				} else if ((outerWidth / 1.5) > outerHeight) {
-					arc.outerRadius(outerHeight / 2.75)
-						.innerRadius((outerHeight / 2.75) - donutWidth);
-				} else {
-					arc.outerRadius(outerWidth / 4.5)
-						.innerRadius((outerHeight / 3) - donutWidth);
-				}
-			}
-				// Pie chart-type
-			else if (chartType == 'pie') {
-				if ((outerWidth / 2) > outerHeight) {
-					arc.outerRadius(outerHeight / 2.5)
-						.innerRadius(0);
-				} else {
-					arc.outerRadius(outerWidth / 4.5)
-						.innerRadius(0);
-				}
-			}
-				// Default chart-type(pie) if nothing is specified
-			else {
-				if ((outerWidth / 2) > outerHeight) {
-					arc.outerRadius(outerHeight / 2.5)
-						.innerRadius(0);
-				} else {
-					arc.outerRadius(outerWidth / 4.5)
-						.innerRadius(0);
-				}
-			}
-		}
-		var noData = (data === undefined || data.values.length === 0) ? true : false;
-		if (noData) {
-			var title = (data !== undefined) ? data.title : '';
-			data = noDataValue;
-			data.title = title;
+            if ((outerWidth / 2) > outerHeight) {
+                arc.outerRadius(outerHeight / 2.5)
+                    .innerRadius(0);
+            } else {
+                arc.outerRadius(outerWidth / 4.5)
+                    .innerRadius(0);
+            }
 		}
 
 		var pieValues = pie(data.values);
 
-		if (!noData) {
-			var g = svgGroup.selectAll(".arc")
-				.data(pieValues)
-				.enter().append("g")
-				.attr("class", "arc")
-					.each(function (arc) {
-						if (isNaN(arc.startAngle))
-							arc.startAngle = 0;
+        var g = svgGroup.selectAll(".arc")
+            .data(pieValues)
+            .enter().append("g")
+            .attr("class", "arc")
+                .each(function (arc) {
+                    if (isNaN(arc.startAngle))
+                        arc.startAngle = 0;
 
-						if (isNaN(arc.endAngle))
-							arc.endAngle = 0;
-					});
+                    if (isNaN(arc.endAngle))
+                        arc.endAngle = 0;
+                });
 
-			// Animation parameters
-			g.append("path")
-				.attr("d", arc)
-					.style("fill", function (d, i) { return noData ? noDataColor : pieChartColours(i); })
-				.transition()
-				.ease(animationType)
-				.duration(animationSpeed)
-				.attrTween("d", tweenPie)
-					.style("cursor", function (d) {
-						return (d.data.url !== "other") ? "default" : "pointer";
-					});
-		} else {
-			drawEmptyPieChart();
-			showInformationMessage();
-			data = undefined;
-		}
+        // Animation parameters
+        g.append("path")
+            .attr("d", arc)
+                .style("fill", function (d, i) { return pieChartColours(i); })
+            .transition()
+            .ease(animationType)
+            .duration(animationSpeed)
+            .attrTween("d", tweenPie)
+                .style("cursor", function (d) {
+                    return (d.data.url !== "other") ? "default" : "pointer";
+                });
 
 		function drawEmptyPieChart() {
 			var grads = svgGroup.append("defs").selectAll("radialGradient").data(pie(pieValues))
@@ -274,9 +221,6 @@ SC.chart.pie = function () {
 			.attr("r", "50%")
 			.attr("id", function (d, i) { return "grad" + i; });
 
-			grads.append("stop").attr("offset", "75%").style("stop-color", noDataColor[1]);
-			grads.append("stop").attr("offset", "100%").style("stop-color", noDataColor[0]);
-
 			svgGroup.selectAll("path")
 				.data(pie(pieValues))
 				.enter().append("path")
@@ -284,14 +228,6 @@ SC.chart.pie = function () {
 				.attr("d", arc);
 		}
 
-		function showInformationMessage() {
-			keyIndicator.append("div").attr('class', 'sc-pie-chart-keyHeader').text(data.title);
-			keyIndicator.append("div")
-				.attr('class', 'sc-chart-noDataMessage')
-				.text(options.noDataAvailable);
-		}
-
-		// Adds tween to each arc / startAngle is where tween starts and endAngle is where tween ends
 		function tweenPie(b) {
 			var i = d3.interpolate({ startAngle: 0 * Math.PI, endAngle: 0 * Math.PI }, b);
 			return function (t) {
