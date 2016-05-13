@@ -1,4 +1,4 @@
-var keyValueData, barData;
+var keyValueData, barData, lineData;
 
 function visualizePie() {
     var pieChart = SC.chart.pie();
@@ -40,6 +40,7 @@ function generateBarData(d) {
 };
 
 $( document ).ready(function() {
+    
     d3.json("../data/products.json", function(error, json) {
       if (error) return console.warn(error);
       keyValueData = { values: d3.nest()
@@ -52,5 +53,15 @@ $( document ).ready(function() {
         
       barData = generateBarData(keyValueData);
       visualizeBar();
+    });
+    
+    d3.json("../data/monthlySales.json", function(error, json) { 
+      var lineChart = SC.chart.line();
+			lineChart
+        .data(json)
+				.height(300)
+				.width(600);
+
+			lineChart("#line-container");
     });
 });
