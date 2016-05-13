@@ -2,56 +2,80 @@
 <meta charset="utf-8">
 
 <html>
-    <head>
-        <link rel="stylesheet" href="css/materialize.min.css">
-        <link rel="stylesheet" href="css/styles.css">
-        <link rel="stylesheet" href="src/output/sturdy-charts.css">
-        <title>Sturdy Charts</title>
-    </head>
+
+<head>
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="src/output/sturdy-charts.css">
+    <title>Sturdy Charts</title>
+</head>
+
 <body>
     <header>
         <nav>
             <div class="nav-wrapper blue darken-2">
-              <a href="#" class="brand-logo">Sturdy Charts</a>
+                <a href="#" class="brand-logo">Sturdy Charts</a>
             </div>
         </nav>
     </header>
-    
+
     <main>
         <div class="container">
             <div class="row"></div>
             <div class="row">
                 <div class="col s12 m6">
-                    <div id="pie-container"></div>
+                    <div class="card white">
+                        <div class="card-content back-text">
+                            <span class="card-title">Line Chart</span>
+                            <div id="line-container"></div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="col s12 m6">
-                    <div id="bar-container"></div>
+                    <div class="card white">
+                        <div class="card-content back-text">
+                            <span class="card-title">Bar Graph</span>
+                            <div id="bar-container"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col s12 m6">
-                    <div id="line-container"></div>
+                    <div class="card white">
+                        <div class="card-content back-text">
+                            <span class="card-title">Pie Chart</span>
+                            <div id="pie-container"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col s12 m6">
-                    <div id="scatter-container"></div>
+                    <div class="card white">
+                        <div class="card-content back-text">
+                            <span class="card-title">Scatter Plot</span>
+                            <div id="scatter-container"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
     </main>
-    
+
     <footer class="page-footer blue darken-2">
-          <div class="footer-copyright">
+        <div class="footer-copyright">
             <div class="fluid-container">D3 charts by Nabeel Tanveer</div>
-          </div>
-        </footer>
+        </div>
+    </footer>
 
 </body>
-    <script src="js/jquery-2.2.1.min.js"></script>
-    <script src="js/materialize.min.js"></script>
-    
-    <script src="js/d3.min.js"></script>
-    <script src="src/output/sturdy-charts.js"></script>
-    
-    <script src="js/app.js"></script>
+<script src="js/jquery-2.2.1.min.js"></script>
+<script src="js/materialize.min.js"></script>
+
+<script src="js/d3.min.js"></script>
+<script src="src/output/sturdy-charts.js"></script>
+
+<script src="js/app.js"></script>
+
 </html>
