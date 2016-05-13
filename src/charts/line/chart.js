@@ -52,7 +52,7 @@ SC.chart.line = function () {
 			.text(function (d) { return d.sales; })
 			.attr({
 				x: function (d) { return (d.month * 3) - 25; },
-				y: function (d) { return h - d.sales; },
+				y: function (d) { return chartHeight - d.sales; },
 				"font-size": "12px",
 				"font-family": "sans-serif",
 				"fill": "#666666",
