@@ -1,27 +1,56 @@
-var data; // a global
+var keyValueData, barData;
 
-function visualizeit() {
+function visualizePie() {
     var pieChart = SC.chart.pie();
-		var element = $('#chart-container');
+		var pieElement = $('#pie-container');
 		pieChart
-			.data(data)
+			.data(keyValueData)
 			.height(250)
 			.width(500)
             .options({ valueKey : 'taxable' });
-		if (element) {
-			pieChart(element[0]);
+		if (pieElement) {
+			pieChart(pieElement[0]);
 		}
+};
+
+function visualizeBar() {
+  var barChart = SC.chart.bar();
+    var barElement = $('#bar-container');
+    
+    barChart
+			.data(barData)
+			.height(130)
+			.width(300)
+			.color(d3.scale.category20());
+
+		barChart(barElement[0]);
+}
+
+function generateBarData(d) {
+		var newData = $.map(d.values, function(o) {
+			return {
+				key : o.key,
+				value : o.values,
+				label: o.values
+			};
+		}).sort(function(a, b) {
+			return d3.ascending(a.key, b.key);
+		});
+		return newData;
 };
 
 $( document ).ready(function() {
     d3.json("../data/products.json", function(error, json) {
       if (error) return console.warn(error);
-      data = { values: d3.nest()
+      keyValueData = { values: d3.nest()
         .key(function(d) { return d.taxable;})
         .rollup(function(d) {
           return d3.sum(d, function(g) {return g.price; });
         }).entries(json)};
-
-      visualizeit();
+      
+      visualizePie();
+        
+      barData = generateBarData(keyValueData);
+      visualizeBar();
     });
 });
